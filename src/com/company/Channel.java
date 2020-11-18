@@ -21,11 +21,11 @@ public class Channel {
         return Double.parseDouble(lowerBound);
     }
 
-    public double getUpperBound() {
+    public double getUpperBound(double budget) {
         if(upperBound.equals("x")){
-            return -1;
+            return budget;
         }
-        return Double.parseDouble(upperBound)/100;
+        return (Double.parseDouble(upperBound)/100)*budget;
     }
 
     public Channel(String name, double ROI, String lowerBound, String upperBound) {
