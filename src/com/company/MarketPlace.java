@@ -1,7 +1,8 @@
 package com.company;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -102,7 +103,27 @@ public class MarketPlace implements GaHelper<Double[]> {
 
     @Override
     public void mutation(List<Double[]> chromosomes, double mutationProb) {
-
+        for (int i = 0; i < chromosomes.size(); i++) {
+            Double[] chromosome = chromosomes.get(i);
+            for (int j = 0; j < chromosome.length; j++) {
+                if (Math.random() < mutationProb) {
+                    double deltaLower = chromosome[j] - channels.get(j).getLowerBound();
+                    double deltaUpper = channels.get(j).getUpperBound(budget) - chromosome[j];
+                    double delta;
+                    if (Math.random() <= 0.5) {
+                        delta = deltaLower;
+                    } else {
+                        delta = deltaUpper;
+                    }
+                    double changeValue = randomNumberWithBounds(delta, 0);
+                    if (delta == deltaLower) {
+                        chromosome[j] = chromosome[j] - changeValue;
+                    } else {
+                        chromosome[j] = chromosome[j] + changeValue;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -112,12 +133,30 @@ public class MarketPlace implements GaHelper<Double[]> {
 
     @Override
     public void printPhenotype(Double[] chromosome, double fitness) {
-
+        try {
+            FileWriter writer = new FileWriter("src/com/company/uniform.txt", true);
+            for (int i = 0; i < chromosome.length; i++) {
+                String line = channels.get(i).getName() + " -> " + chromosome[i];
+                writer.write(line);
+            }
+            writer.write("The total profit is " + fitness);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void printPhenotypeAfterIterations(List<Double[]> chromosomes, List<Double> fitness) {
-
+        int index = 0;
+        double max = Double.MIN_VALUE;
+        for (int i = 0; i < chromosomes.size(); i++) {
+            if (fitness.get(i) > max) {
+                max = fitness.get(i);
+                index = i;
+            }
+        }
+        printPhenotype(chromosomes.get(index), fitness.get(index));
     }
 
     @Override
