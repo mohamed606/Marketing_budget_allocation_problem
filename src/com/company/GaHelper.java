@@ -16,4 +16,6 @@ public interface GaHelper<T> {
     void printPhenotype(T chromosome, double fitness);
 
     void printPhenotypeAfterIterations(List<T> chromosomes, List<Double>fitness);
+
+    int tournamentWinningCondition(double fitness1,int index1,double fitness2,int index2);
 }

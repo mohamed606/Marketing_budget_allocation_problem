@@ -18,6 +18,12 @@ public class Main {
 //            channelList.add(new Channel(input.next(), input.nextDouble(), input.next(),input.next()));
 //        }
 //        MarketPlace marketPlace = new MarketPlace(channelList, budget);
-//        marketPlace.generatePopulation(8);
+//        marketPlace.generatePopulation(8);\
+        Double[] pa = new Double[]{1.0,2.0,3.0,4.0};
+        Double[] childe = pa;
+        childe[2]= 6666.0;
+        for(int i=0 ; i<pa.length ; i++){
+            System.out.println(pa[i]);
+        }
     }
 }

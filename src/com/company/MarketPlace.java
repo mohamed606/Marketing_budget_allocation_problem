@@ -46,7 +46,7 @@ public class MarketPlace implements GaHelper<Double[]> {
                 chromosome[index] = newValue;
                 overValue = overValue - (value - newValue);
                 if (overValue < 0) {
-                    chromosome[index] += -1*overValue;
+                    chromosome[index] += -1 * overValue;
                     overValue = 0;
                 }
                 index++;
@@ -80,12 +80,24 @@ public class MarketPlace implements GaHelper<Double[]> {
     }
 
     private double randomNumberWithBounds(double upperBound, double lowerBound) {
-        return Math.random() * (upperBound - lowerBound ) + lowerBound;
+        return Math.random() * (upperBound - lowerBound) + lowerBound;
     }
 
     @Override
     public List<Double> calculatePopulationFitness(List<Double[]> chromosomes) {
-        return null;
+        List<Double> fitness = new ArrayList<>();
+        for (int i = 0; i < chromosomes.size(); i++) {
+            fitness.add(calculateChromosomeFitness(chromosomes.get(i)));
+        }
+        return fitness;
+    }
+
+    private double calculateChromosomeFitness(Double[] chromosome) {
+        double fitness = 0D;
+        for (int i = 0; i < chromosome.length; i++) {
+            fitness = fitness + (chromosome[i] * channels.get(i).getROI());
+        }
+        return fitness;
     }
 
     @Override
@@ -95,7 +107,7 @@ public class MarketPlace implements GaHelper<Double[]> {
 
     @Override
     public int stoppingCondition(List<Double> populationFitness) {
-        return 0;
+        return -1;
     }
 
     @Override
@@ -106,5 +118,14 @@ public class MarketPlace implements GaHelper<Double[]> {
     @Override
     public void printPhenotypeAfterIterations(List<Double[]> chromosomes, List<Double> fitness) {
 
+    }
+
+    @Override
+    public int tournamentWinningCondition(double fitness1, int index1, double fitness2, int index2) {
+        if (fitness1 > fitness2) {
+            return index1;
+        } else {
+            return index2;
+        }
     }
 }

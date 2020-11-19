@@ -11,18 +11,22 @@ public class GA<T> {
     private final int populationSize;
     private final double crossOverProb;
     private List<T[]> newGeneration;
+    private List<T[]> newGenerationWithNoCross;
     private final double mutationProb;
     private final int iterationNumber;
     private final GaHelper helper;
+    private final CrossOverType crossOver;
 
-    public GA(int populationSize, double crossOverProb, double mutationProb, int iterationNumber, GaHelper gaHelper) {
+    public GA(int populationSize, double crossOverProb, double mutationProb, int iterationNumber, GaHelper gaHelper, CrossOverType crossOver) {
         matingPool = new ArrayList<>();
         newGeneration = new ArrayList<>();
         this.populationSize = populationSize;
         this.crossOverProb = crossOverProb;
         this.mutationProb = mutationProb;
         this.iterationNumber = iterationNumber;
+        newGenerationWithNoCross = new ArrayList<>();
         this.helper = gaHelper;
+        this.crossOver = crossOver;
     }
 
     private void startTournament() {
@@ -35,19 +39,12 @@ public class GA<T> {
             if (index1 == index2) {
                 continue;
             }
-            if (populationFitness.get(index1) < populationFitness.get(index2)) {
-                if (prev == index1) {
-                    continue;
-                }
-                matingPool.add(index1);
-                prev = index1;
-            } else {
-                if (index2 == prev) {
-                    continue;
-                }
-                matingPool.add(index2);
-                prev = index2;
+            int winningIndex = helper.tournamentWinningCondition(populationFitness.get(index1), index1, populationFitness.get(index2), index2);
+            if (prev == winningIndex) {
+                continue;
             }
+            prev = winningIndex;
+            matingPool.add(winningIndex);
             counter++;
             if (matingPool.size() % 2 == 0) {
                 prev = -1;
@@ -61,18 +58,12 @@ public class GA<T> {
             T[] parent1 = chromosomes.get(matingPool.remove(0));
             T[] parent2 = chromosomes.get(matingPool.remove(0));
             if (Math.random() <= crossOverProb) {
-                int crossOverPoint = random.nextInt(parent1.length - 2) + 1;
-                T[] child1 = parent1;
-                T[] child2 = parent2;
-                for (int i = crossOverPoint; i < parent1.length; i++) {
-                    child1[i] = parent2[i];
-                    child2[i] = parent1[i];
-                }
-                newGeneration.add(child1);
-                newGeneration.add(child2);
+                List<T[]> childes = crossOver.doCrossOver(parent1, parent2);
+                newGeneration.add(childes.get(0));
+                newGeneration.add(childes.get(1));
             } else {
-                newGeneration.add(parent1);
-                newGeneration.add(parent2);
+                newGenerationWithNoCross.add(parent1);
+                newGenerationWithNoCross.add(parent2);
             }
         }
     }
@@ -84,7 +75,10 @@ public class GA<T> {
             startTournament();
             startMating();
             helper.mutation(newGeneration, mutationProb);
-            chromosomes = newGeneration;
+            //TODO(1) change next generation values
+            chromosomes.clear();
+            chromosomes.addAll(newGeneration);
+            chromosomes.addAll(newGenerationWithNoCross);
             newGeneration = new ArrayList<>();
             populationFitness = helper.calculatePopulationFitness(chromosomes);
             int solutionIndex = helper.stoppingCondition(populationFitness);
