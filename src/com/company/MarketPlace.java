@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Random;
 
 public class MarketPlace implements GaHelper<Double[]> {
-    private List<Channel> channels;
-    private double budget;
+    protected List<Channel> channels;
+    protected double budget;
 
     public MarketPlace(List<Channel> channels, double budget) {
         this.channels = channels;
@@ -80,7 +80,7 @@ public class MarketPlace implements GaHelper<Double[]> {
         }
     }
 
-    private double randomNumberWithBounds(double upperBound, double lowerBound) {
+    protected double randomNumberWithBounds(double upperBound, double lowerBound) {
         return Math.random() * (upperBound - lowerBound) + lowerBound;
     }
 
@@ -102,7 +102,7 @@ public class MarketPlace implements GaHelper<Double[]> {
     }
 
     @Override
-    public void mutation(List<Double[]> chromosomes, double mutationProb) {
+    public void mutation(List<Double[]> chromosomes, double mutationProb, int currentGeneration, int totalNumberOfGenerations) {
         for (int i = 0; i < chromosomes.size(); i++) {
             Double[] chromosome = chromosomes.get(i);
             for (int j = 0; j < chromosome.length; j++) {

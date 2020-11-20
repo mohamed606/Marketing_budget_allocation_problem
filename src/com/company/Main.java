@@ -3,7 +3,6 @@ package com.company;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 public class Main {
 
@@ -27,11 +26,14 @@ public class Main {
         }
         System.out.println("\nPlease wait while running the GA...\n");
         MarketPlace marketPlace = new MarketPlace(channelList, budget);
+        MarketPlaceNonUniform marketPlaceNonUniform = new MarketPlaceNonUniform(channelList,budget);
         ElitismReplacement elitismReplacement = new ElitismReplacement(3);
         TwoPointCrossOver twoPointCrossOver = new TwoPointCrossOver();
         GA<Double> ga = new GA<>(16, 0.56, 0.1, 1000, marketPlace, twoPointCrossOver, elitismReplacement);
+        GA<Double> gaNonUniform = new GA<>(16, 0.56, 0.1, 1000, marketPlaceNonUniform, twoPointCrossOver, elitismReplacement);
         for(int i=0; i<20 ; i++){
             ga.start();
+            gaNonUniform.start();
         }
     }
 }

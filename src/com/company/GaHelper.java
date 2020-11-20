@@ -9,7 +9,7 @@ public interface GaHelper<T> {
 
     List<Double> calculatePopulationFitness(List<T> chromosomes);
 
-    void mutation(List<T> chromosomes, double mutationProb);
+    void mutation(List<T> chromosomes, double mutationProb, int currentGeneration, int totalNumberOfGenerations);
 
     int stoppingCondition(List<Double> populationFitness);
 

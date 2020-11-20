@@ -76,7 +76,7 @@ public class GA<T> {
         for (int i = 0; i < iterationNumber; i++) {
             startTournament();
             startMating();
-            helper.mutation(newGeneration, mutationProb);
+            helper.mutation(newGeneration, mutationProb,i,iterationNumber);
             newGeneration.addAll(newGenerationWithNoCross);
             List<Double> newGenFitness =  helper.calculatePopulationFitness(newGeneration);
             chromosomes = replacementType.doReplacement(chromosomes, populationFitness,newGeneration,newGenFitness);
