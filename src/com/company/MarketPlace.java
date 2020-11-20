@@ -96,7 +96,7 @@ public class MarketPlace implements GaHelper<Double[]> {
     private double calculateChromosomeFitness(Double[] chromosome) {
         double fitness = 0D;
         for (int i = 0; i < chromosome.length; i++) {
-            fitness = fitness + (chromosome[i] * channels.get(i).getROI());
+            fitness = fitness + (chromosome[i] * (channels.get(i).getROI()/100));
         }
         return fitness;
     }
@@ -123,6 +123,7 @@ public class MarketPlace implements GaHelper<Double[]> {
                     }
                 }
             }
+            checkAndFix(chromosome);
         }
     }
 
@@ -134,12 +135,16 @@ public class MarketPlace implements GaHelper<Double[]> {
     @Override
     public void printPhenotype(Double[] chromosome, double fitness) {
         try {
+            System.out.println("The final marketing budget allocation");
             FileWriter writer = new FileWriter("src/com/company/uniform.txt", true);
             for (int i = 0; i < chromosome.length; i++) {
-                String line = channels.get(i).getName() + " -> " + chromosome[i];
+                String line = channels.get(i).getName() + " -> " + chromosome[i] + "\n";
+                System.out.print(line);
                 writer.write(line);
             }
-            writer.write("The total profit is " + fitness);
+            System.out.println("The total profit is " + fitness);
+            writer.write("The total profit is " + fitness+"\n");
+            writer.write("\n********************************\n");
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

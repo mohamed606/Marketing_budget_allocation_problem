@@ -16,8 +16,9 @@ public class GA<T> {
     private final int iterationNumber;
     private final GaHelper helper;
     private final CrossOverType crossOver;
+    private final ReplacementType replacementType;
 
-    public GA(int populationSize, double crossOverProb, double mutationProb, int iterationNumber, GaHelper gaHelper, CrossOverType crossOver) {
+    public GA(int populationSize, double crossOverProb, double mutationProb, int iterationNumber, GaHelper gaHelper, CrossOverType crossOver, ReplacementType replacementType) {
         matingPool = new ArrayList<>();
         newGeneration = new ArrayList<>();
         this.populationSize = populationSize;
@@ -27,13 +28,14 @@ public class GA<T> {
         newGenerationWithNoCross = new ArrayList<>();
         this.helper = gaHelper;
         this.crossOver = crossOver;
+        this.replacementType = replacementType;
     }
 
     private void startTournament() {
         int counter = 0;
         Random random = new Random();
         int prev = -1;
-        while (counter < populationSize * 2) {
+        while (counter < populationSize) {
             int index1 = random.nextInt(populationSize);
             int index2 = random.nextInt(populationSize);
             if (index1 == index2) {
@@ -75,11 +77,11 @@ public class GA<T> {
             startTournament();
             startMating();
             helper.mutation(newGeneration, mutationProb);
-            //TODO(1) change next generation values
-            chromosomes.clear();
-            chromosomes.addAll(newGeneration);
-            chromosomes.addAll(newGenerationWithNoCross);
+            newGeneration.addAll(newGenerationWithNoCross);
+            List<Double> newGenFitness =  helper.calculatePopulationFitness(newGeneration);
+            chromosomes = replacementType.doReplacement(chromosomes, populationFitness,newGeneration,newGenFitness);
             newGeneration = new ArrayList<>();
+            newGenerationWithNoCross = new ArrayList<>();
             populationFitness = helper.calculatePopulationFitness(chromosomes);
             int solutionIndex = helper.stoppingCondition(populationFitness);
             if (solutionIndex != -1) {
