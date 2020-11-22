@@ -17,6 +17,11 @@ public class TwoPointCrossOver implements CrossOverType<Double> {
             child1[i] = chromosome1[i];
             child2[i] = chromosome2[i];
         }
+        if(crossOverPoint1 > crossOverPoint2){
+            int temp = crossOverPoint1;
+            crossOverPoint1 = crossOverPoint2;
+            crossOverPoint2 = temp;
+        }
         for (int i = crossOverPoint1; i < crossOverPoint2; i++) {
             child1[i] = chromosome2[i];
             child2[i] = chromosome1[i];
